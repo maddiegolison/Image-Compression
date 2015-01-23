@@ -1,0 +1,101 @@
+README
+for Comp 40 Homework 4
+by Mike Yeung and Madeleine Golison
+last updated on 2014.10.14
+
+Correctly Implemented
+
+        Bitpack
+                After testing the bitpack functions, fits, get, and new, we
+                believe everything works as it should. Originally, when we
+                tested for the edge cases (ex. 64 bits) we had some trouble, but
+                we believe that we fixed our problems.
+        40image
+                Our implementation works correctly for compress and decompress,
+                from what we tested. Some test cases that gave us trouble
+                originally were all black images, all white images, and
+                decompressed images with a bad width or height. However, we
+                believe that we were able to fix our code so that these cases
+                would work. Our implementation also works for very large images
+                (ex. mobo.pnm).
+
+Incorrectly Implemented
+
+        From what we have tested, we believe that our bitpack and 40image are
+        correctly implemented.
+
+Architecture
+
+        From our original design document, very little of our architecture
+        changed. However, some of our data structures needed to be altered for
+        us to successfully solve the image compression and decompression.
+
+        In 40image we deal with the compression option, and once that has been
+        determined compress40 or decompress40 will be called from the compress40
+        module.   Either function will receive a pointer to a file--compress
+        will take in a file that is a ppm and decompress will take in a file
+        that is COMP40 compressed format 2.
+
+        In compress40, we call all of the major functions that are from our
+        different modules. We
+                read a ppm,
+                trim the ppm (when necessary),
+                convert it to an array of components,
+                convert these to an array of blocks (which each contain an array
+                        of component videos),
+                convert the blocks to an array of compresseds,
+                write the compresseds to stdout,
+                and then free all of our allocated memory
+
+        In decompress40, we call all of the major decompress functions that are
+        from our different modules. We
+                read in the compressed image,
+                convert the compressed objects to blocks, with each block
+                        containing an array of component videos,
+                convert the blocks to an array of components,
+                from the components we calculate rgb values and create a new
+                        ppm,
+                we write the ppm,
+                and then we free all of our allocated memory
+
+Data structures
+
+        CompressionOption: An enum that states whether the user wants to
+                compress or decompress the image.
+        RGB: To store each pixel’s uncompressed RGB values and denominator.
+        Pixmap: To store each pixel as an array of RGBs. We will use the Pnm_ppm
+                type from PNM, but we retain the option to change it later.
+        RGBFloat: To store each pixel’s uncompressed RGB values as floats.
+        ComponentVideo: To store each pixel’s Y / PR / PB values as floats.
+        ComponentsArray: UArray_T of components.
+        Block: To store a (now 2 by 2, flexible) block of pixels. This contains
+                the (now 2 by 2) UArray_T of ComponentVideos, and the cosine
+                coefficients a, b, c, and d, and the quantized chroma of the
+                average PB and PR.
+        Compressed: The specified compressed format, a form of Packed.
+        CompressedArray: To store each Compressed. We will use the array from
+                A2Methods now, but we retain the option to change it later.
+
+Modules
+
+        A2Methods: We used this to store a PPM as an array of RGBs, RGBFloats,
+                ComponentVideos, Packeds, and Compresseds. We will also use
+                other functions like mapping.
+        PPM: Includes data structures and functions to read, write, and free PPM
+                files. This will call many functions from PNM. By wrapping PNM
+                functions here, we retain the option to switch out or add to the
+                implementation later on.
+        RGBComponentVideo: Includes functions to transform between RGB values
+                and component video values.
+        BitPack: (Part B) Includes data structures and functions to pack and
+                unpack data into words of a specific size.
+        Compression: Includes functions to compress and decompress between PPM
+                files and the compressed format. This will call many other
+                modules.
+        CompressedFormat: Includes data structures and functions to read, write,
+                and free the compressed format files. It will use many functions
+                from BitPack.
+
+Hours spent analyzing the problems: 12
+
+Hours spent solving the problems: 30
